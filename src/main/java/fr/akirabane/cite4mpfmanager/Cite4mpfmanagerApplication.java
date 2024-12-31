@@ -20,8 +20,7 @@ public class Cite4mpfmanagerApplication {
 
 			// Création d'une unité
 			Units unit = new Units(1L, "OfC", "JUDGE", cid);
-
-			// Affichage du matricule
+			
 			System.out.println("Matricule : " + unit.getMatricule());
 			System.out.println(unit);
 		} catch (IllegalArgumentException e) {
