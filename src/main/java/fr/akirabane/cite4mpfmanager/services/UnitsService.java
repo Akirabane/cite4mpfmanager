@@ -22,15 +22,15 @@ public class UnitsService {
         return unitsRepository.save(units);
     }
 
-    public Units updateUnits(Units units) {
+    public Units updateUnit(Units units) {
         return unitsRepository.save(units);
     }
 
-    public void deleteUnits(Long id) {
+    public void deleteUnit(int id) {
         unitsRepository.deleteById(id);
     }
 
-    public Units findUnitsById(Long id) {
+    public Units findUnitById(int id) {
         return unitsRepository.findById(id).orElseThrow(() -> new UnitNotFoundException("Unit with id " + id + " not found"));
     }
 
@@ -42,8 +42,8 @@ public class UnitsService {
         return unitsRepository.findUnitsByDivision(division);
     }
 
-    public Units findUnitsByCid(String cid) {
-        return unitsRepository.findUnitsByCid(cid).orElseThrow(() -> new UnitNotFoundException("Unit with cid " + cid + " not found"));
+    public Units findUnitByCid(int cid) {
+        return unitsRepository.findUnitsByCid(cid);
     }
 
     public List<Units> findAllUnits() {
