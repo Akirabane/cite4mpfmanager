@@ -1,12 +1,22 @@
 package fr.akirabane.cite4mpfmanager.controllers;
 
+import fr.akirabane.cite4mpfmanager.constantes.genericConstantes;
+import fr.akirabane.cite4mpfmanager.exceptions.CidErrorException;
+import fr.akirabane.cite4mpfmanager.exceptions.InvalidGradeException;
+import fr.akirabane.cite4mpfmanager.exceptions.UnitAlreadyExistException;
 import fr.akirabane.cite4mpfmanager.model.Units;
 import fr.akirabane.cite4mpfmanager.services.UnitsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/units")
@@ -30,6 +40,18 @@ public class UnitsController {
         return new ResponseEntity<>(unit, HttpStatus.OK);
     }
 
+    @GetMapping("/findUnitByPseudo/{pseudo}")
+    public ResponseEntity<Units> getUnitByPseudo(@PathVariable("pseudo") String pseudo) {
+        Units unit = unitsService.findUnitByPseudo(pseudo);
+        return new ResponseEntity<>(unit, HttpStatus.OK);
+    }
+
+    @GetMapping("/findUnitByUuid/{uuid}")
+    public ResponseEntity<Units> getUnitByUuid(@PathVariable("uuid") String uuid) {
+        Units unit = unitsService.findUnitByUuid(uuid);
+        return new ResponseEntity<>(unit, HttpStatus.OK);
+    }
+
     @GetMapping("/findUnitsByGrade/{grade}")
     public ResponseEntity<List<Units>> getUnitsByGrade(@PathVariable("grade") String grade) {
         List<Units> units = unitsService.findUnitsByGrade(grade);
@@ -50,20 +72,21 @@ public class UnitsController {
 
     @PostMapping("/addUnit")
     public ResponseEntity<Units> addUnit(@RequestBody Units unit) {
-        Units newUnit = unitsService.addUnits(unit);
+        Units newUnit = unitsService.addUnit(unit);
         return new ResponseEntity<>(newUnit, HttpStatus.CREATED);
     }
 
-    @PutMapping("/updateUnit")
-    public ResponseEntity<Units> updateUnit(@RequestBody Units unit) {
-        Units updateUnit = unitsService.updateUnit(unit);
-        return new ResponseEntity<>(updateUnit, HttpStatus.OK);
+
+    @PutMapping("/updateUnit/{CID}")
+    public ResponseEntity<Units> updateUnit(@PathVariable("CID") int cid, @RequestBody Units unit) {
+        Units updatedUnit = unitsService.updateUnit(cid, unit);
+        return new ResponseEntity<>(updatedUnit, HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteUnit/{id}")
-    public ResponseEntity<?> deleteUnit(@PathVariable("id") int id) {
-        unitsService.deleteUnit(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @DeleteMapping("/deleteUnit/{cid}")
+    public ResponseEntity<?> deleteUnit(@PathVariable("cid") int cid) {
+        unitsService.deleteUnitByCid(cid);
+        return new ResponseEntity<>("Unité suprimée avec succès.", HttpStatus.OK);
     }
 
 }

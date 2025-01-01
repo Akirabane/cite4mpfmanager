@@ -1,6 +1,9 @@
 package fr.akirabane.cite4mpfmanager.model;
 
+import fr.akirabane.cite4mpfmanager.exceptions.CidErrorException;
 import jakarta.persistence.*;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "units")
@@ -10,7 +13,16 @@ public class Units {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "cid", nullable = false, unique = true)
+    @Column(name = "pseudo", nullable = false)
+    private String pseudo;
+
+    @Column(name = "uuid", nullable = false)
+    private String uuid;
+
+    @Column(name = "skin", nullable = false)
+    private String skin;
+
+    @Column(name = "cid", nullable = false)
     private int cid;
 
     @Column(name = "grade", nullable = false)
@@ -19,15 +31,44 @@ public class Units {
     @Column(name = "division", nullable = false)
     private String division;
 
-    public Units() {
-        // Constructeur par défaut requis par Hibernate
-    }
+    @Column(name = "matricule", nullable = false)
+    private String matricule;
 
-    public Units(int id, String grade, String division, int cid) {
+    public Units() {}
+
+    public Units(int id, String pseudo, String uuid, String skin, int cid, String grade, String division, String matricule) {
         this.id = id;
+        this.pseudo = pseudo;
+        this.uuid = uuid;
+        this.skin = skin;
+        this.cid = cid;
         this.grade = grade;
         this.division = division;
-        this.cid = cid;
+        this.matricule = matricule;
+    }
+
+    public String getSkin() {
+        return skin;
+    }
+
+    public void setSkin(String skin) {
+        this.skin = skin;
+    }
+
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public int getId() {
@@ -56,14 +97,17 @@ public class Units {
 
     public void setCid(int cid) {
         if (String.valueOf(cid).length() != 5) {
-            throw new IllegalArgumentException("CID must be 5 digits long");
+            throw new CidErrorException("CID must be 5 characters long");
         }
-
         this.cid = cid;
     }
 
     public String getMatricule() {
-        return String.format("C4-%s.%s-%s", grade, division, cid);
+        return String.format("C4-MPF-%s.%s-%s", grade, division, cid);
+    }
+
+    public void setMatricule(String matricule) {
+        this.matricule = matricule;
     }
 
     @Override
