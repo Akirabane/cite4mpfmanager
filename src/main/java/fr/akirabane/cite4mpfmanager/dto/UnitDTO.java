@@ -60,10 +60,6 @@ public class UnitDTO {
         return cid;
     }
 
-    public void setCid(int cid) {
-        this.cid = cid;
-    }
-
     public String getGrade() {
         return grade;
     }
