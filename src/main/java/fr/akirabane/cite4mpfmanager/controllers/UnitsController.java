@@ -1,22 +1,15 @@
 package fr.akirabane.cite4mpfmanager.controllers;
 
-import fr.akirabane.cite4mpfmanager.constantes.genericConstantes;
-import fr.akirabane.cite4mpfmanager.exceptions.CidErrorException;
-import fr.akirabane.cite4mpfmanager.exceptions.InvalidGradeException;
-import fr.akirabane.cite4mpfmanager.exceptions.UnitAlreadyExistException;
+import fr.akirabane.cite4mpfmanager.dto.UnitDTO;
+import fr.akirabane.cite4mpfmanager.mapper.UnitMapper;
 import fr.akirabane.cite4mpfmanager.model.Units;
 import fr.akirabane.cite4mpfmanager.services.UnitsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/units")
@@ -29,64 +22,77 @@ public class UnitsController {
     }
 
     @GetMapping("/allUnits")
-    public ResponseEntity<List<Units>> getAllUnits() {
+    public ResponseEntity<List<UnitDTO>> getAllUnits() {
         List<Units> allUnits = unitsService.findAllUnits();
-        return new ResponseEntity<>(allUnits, HttpStatus.OK);
+        List<UnitDTO> allUnitsDTO = allUnits.stream()
+                .map(UnitMapper::convertToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(allUnitsDTO, HttpStatus.OK);
     }
 
     @GetMapping("/findUnitById/{id}")
-    public ResponseEntity<Units> getUnitById(@PathVariable("id") int id) {
+    public ResponseEntity<UnitDTO> getUnitById(@PathVariable("id") int id) {
         Units unit = unitsService.findUnitById(id);
-        return new ResponseEntity<>(unit, HttpStatus.OK);
+        UnitDTO unitDTO = UnitMapper.convertToDTO(unit);
+        return new ResponseEntity<>(unitDTO, HttpStatus.OK);
     }
 
     @GetMapping("/findUnitByPseudo/{pseudo}")
-    public ResponseEntity<Units> getUnitByPseudo(@PathVariable("pseudo") String pseudo) {
+    public ResponseEntity<UnitDTO> getUnitByPseudo(@PathVariable("pseudo") String pseudo) {
         Units unit = unitsService.findUnitByPseudo(pseudo);
-        return new ResponseEntity<>(unit, HttpStatus.OK);
+        UnitDTO unitDTO = UnitMapper.convertToDTO(unit);
+        return new ResponseEntity<>(unitDTO, HttpStatus.OK);
     }
 
     @GetMapping("/findUnitByUuid/{uuid}")
-    public ResponseEntity<Units> getUnitByUuid(@PathVariable("uuid") String uuid) {
+    public ResponseEntity<UnitDTO> getUnitByUuid(@PathVariable("uuid") String uuid) {
         Units unit = unitsService.findUnitByUuid(uuid);
-        return new ResponseEntity<>(unit, HttpStatus.OK);
+        UnitDTO unitDTO = UnitMapper.convertToDTO(unit);
+        return new ResponseEntity<>(unitDTO, HttpStatus.OK);
     }
 
     @GetMapping("/findUnitsByGrade/{grade}")
-    public ResponseEntity<List<Units>> getUnitsByGrade(@PathVariable("grade") String grade) {
+    public ResponseEntity<List<UnitDTO>> getUnitsByGrade(@PathVariable("grade") String grade) {
         List<Units> units = unitsService.findUnitsByGrade(grade);
-        return new ResponseEntity<>(units, HttpStatus.OK);
+        List<UnitDTO> unitsDTO = units.stream()
+                .map(UnitMapper::convertToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(unitsDTO, HttpStatus.OK);
     }
 
     @GetMapping("/findUnitsByDivision/{division}")
-    public ResponseEntity<List<Units>> getUnitsByDivision(@PathVariable("division") String division) {
+    public ResponseEntity<List<UnitDTO>> getUnitsByDivision(@PathVariable("division") String division) {
         List<Units> units = unitsService.findUnitsByDivision(division);
-        return new ResponseEntity<>(units, HttpStatus.OK);
+        List<UnitDTO> unitsDTO = units.stream()
+                .map(UnitMapper::convertToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(unitsDTO, HttpStatus.OK);
     }
 
     @GetMapping("/findUnitByCID/{cid}")
-    public ResponseEntity<Units> getUnitByCid(@PathVariable("cid") int cid) {
+    public ResponseEntity<UnitDTO> getUnitByCid(@PathVariable("cid") int cid) {
         Units unit = unitsService.findUnitByCid(cid);
-        return new ResponseEntity<>(unit, HttpStatus.OK);
+        UnitDTO unitDTO = UnitMapper.convertToDTO(unit);
+        return new ResponseEntity<>(unitDTO, HttpStatus.OK);
     }
 
     @PostMapping("/addUnit")
-    public ResponseEntity<Units> addUnit(@RequestBody Units unit) {
-        Units newUnit = unitsService.addUnit(unit);
-        return new ResponseEntity<>(newUnit, HttpStatus.CREATED);
+    public ResponseEntity<UnitDTO> addUnit(@RequestBody UnitDTO unitDTO) {
+        UnitDTO newUnitDTO = unitsService.addUnit(unitDTO);
+        return new ResponseEntity<>(newUnitDTO, HttpStatus.CREATED);
     }
 
-
     @PutMapping("/updateUnit/{CID}")
-    public ResponseEntity<Units> updateUnit(@PathVariable("CID") int cid, @RequestBody Units unit) {
-        Units updatedUnit = unitsService.updateUnit(cid, unit);
-        return new ResponseEntity<>(updatedUnit, HttpStatus.OK);
+    public ResponseEntity<UnitDTO> updateUnit(@PathVariable("CID") int cid, @RequestBody UnitDTO unitDTO) {
+        Units unitToUpdate = UnitMapper.convertToEntity(unitDTO);
+        Units updatedUnit = unitsService.updateUnit(cid, unitToUpdate);
+        UnitDTO updatedUnitDTO = UnitMapper.convertToDTO(updatedUnit);
+        return new ResponseEntity<>(updatedUnitDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteUnit/{cid}")
-    public ResponseEntity<?> deleteUnit(@PathVariable("cid") int cid) {
+    public ResponseEntity<String> deleteUnit(@PathVariable("cid") int cid) {
         unitsService.deleteUnitByCid(cid);
-        return new ResponseEntity<>("Unité suprimée avec succès.", HttpStatus.OK);
+        return new ResponseEntity<>("Unité supprimée avec succès.", HttpStatus.OK);
     }
-
 }
