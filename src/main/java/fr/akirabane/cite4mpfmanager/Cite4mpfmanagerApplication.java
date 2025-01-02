@@ -1,10 +1,7 @@
 package fr.akirabane.cite4mpfmanager;
 
-import fr.akirabane.cite4mpfmanager.model.Units;
-import org.apache.catalina.filters.CorsFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class Cite4mpfmanagerApplication {
