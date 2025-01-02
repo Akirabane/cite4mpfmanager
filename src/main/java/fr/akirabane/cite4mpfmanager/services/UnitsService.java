@@ -1,6 +1,7 @@
 package fr.akirabane.cite4mpfmanager.services;
 
 import fr.akirabane.cite4mpfmanager.constantes.genericConstantes;
+import fr.akirabane.cite4mpfmanager.dto.UnitDTO;
 import fr.akirabane.cite4mpfmanager.exceptions.*;
 import fr.akirabane.cite4mpfmanager.model.Units;
 import fr.akirabane.cite4mpfmanager.repository.UnitsRepository;
@@ -14,6 +15,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import static fr.akirabane.cite4mpfmanager.mapper.UnitMapper.convertToDTO;
+import static fr.akirabane.cite4mpfmanager.mapper.UnitMapper.convertToEntity;
+
 @Service
 public class UnitsService {
 
@@ -24,16 +28,20 @@ public class UnitsService {
         this.unitsRepository = unitsRepository;
     }
 
-    public Units addUnit(Units unit) {
-
-        if (unit.getPseudo() == null || unit.getGrade() == null || unit.getDivision() == null || unit.getCid() == 0) {
-            throw new AddUnitMissingInformationException("Missing information : Pseudo, Grade, Division and CID are required.");
+    public UnitDTO addUnit(UnitDTO unitDTO) {
+        // Validation des informations de base
+        if (unitDTO.getPseudo() == null || unitDTO.getGrade() == null || unitDTO.getDivision() == null || unitDTO.getCid() == 0) {
+            throw new AddUnitMissingInformationException("Missing information: Pseudo, Grade, Division, and CID are required.");
         }
 
-        String uuid = fetchUUIDFromMinecraftAPI(unit.getPseudo());
+        // Conversion DTO -> Entity
+        Units unit = convertToEntity(unitDTO);
+
+        // Récupération de l'UUID et configuration de l'URL du skin
+        String uuid = fetchUUIDFromMinecraftAPI(unitDTO.getPseudo());
         unit.setUuid(uuid);
 
-        String skin = genericConstantes.API_MINECRAFT_SKIN_URL + unit.getPseudo() + "/Body/10.5/10";
+        String skin = genericConstantes.API_MINECRAFT_SKIN_URL + unitDTO.getPseudo() + "/Body/10.5/10";
         unit.setSkin(skin);
 
         validateCID(unit);
@@ -41,7 +49,9 @@ public class UnitsService {
         validateDivision(unit);
         validateMatricule(unit);
 
-        return unitsRepository.save(unit);
+        Units savedUnit = unitsRepository.save(unit);
+
+        return convertToDTO(savedUnit);
     }
 
     public Units updateUnit(int cid, Units unit) {
