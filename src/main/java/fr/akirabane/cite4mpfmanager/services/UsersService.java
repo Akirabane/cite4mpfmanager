@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static fr.akirabane.cite4mpfmanager.mapper.UserMapper.convertToDTO;
+import static fr.akirabane.cite4mpfmanager.mapper.UserMapper.convertToEntity;
+
 @Service
 public class UsersService {
 
@@ -37,12 +40,9 @@ public class UsersService {
     }
 
     public UserDTO addUser(UserDTO userDTO) {
-        Users user = new Users();
-        user.setPseudo(userDTO.getPseudo());
-        user.setPassword(userDTO.getPassword());
-        user.setIsAdmin(userDTO.getIsAdmin());
+        Users user = convertToEntity(userDTO);
         Users newUser = userRepository.save(user);
-        return new UserDTO(newUser.getId(), newUser.getPseudo(), newUser.getPassword(), newUser.getIsAdmin());
+        return convertToDTO(newUser);
     }
 
     public Users updateUser(String pseudo, Users user) {
