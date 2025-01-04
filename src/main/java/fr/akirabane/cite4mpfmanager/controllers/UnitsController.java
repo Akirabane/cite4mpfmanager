@@ -37,6 +37,25 @@ public class UnitsController {
         return new ResponseEntity<>(unitDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/findUnitByIsBaseUnion/{isBaseUnion}")
+    public ResponseEntity<List<UnitDTO>> getUnitByIsBaseUnion(@PathVariable("isBaseUnion") boolean isBaseUnion) {
+        List<Units> units = unitsService.findUnitByIsBaseUnion(isBaseUnion);
+        List<UnitDTO> unitDTO = units.stream()
+                .map(UnitMapper::convertToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(unitDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/findUnitByIsBaseDivision/{isBaseDivision}")
+    public ResponseEntity<List<UnitDTO>> getUnitByIsBaseDivision(@PathVariable("isBaseDivision") boolean isBaseDivision) {
+        List<Units> units = unitsService.findUnitByIsBaseDivision(isBaseDivision);
+        List<UnitDTO> unitDTO = units.stream()
+                .map(UnitMapper::convertToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(unitDTO, HttpStatus.OK);
+    }
+
+
     @GetMapping("/findUnitByPseudo/{pseudo}")
     public ResponseEntity<UnitDTO> getUnitByPseudo(@PathVariable("pseudo") String pseudo) {
         Units unit = unitsService.findUnitByPseudo(pseudo);

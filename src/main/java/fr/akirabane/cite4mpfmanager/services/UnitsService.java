@@ -13,7 +13,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import static fr.akirabane.cite4mpfmanager.mapper.UnitMapper.convertToDTO;
 import static fr.akirabane.cite4mpfmanager.mapper.UnitMapper.convertToEntity;
@@ -41,7 +45,7 @@ public class UnitsService {
         String uuid = fetchUUIDFromMinecraftAPI(unitDTO.getPseudo());
         unit.setUuid(uuid);
 
-        String skin = genericConstantes.API_MINECRAFT_SKIN_URL + unitDTO.getPseudo() + "/Body/10.5/10";
+        String skin = genericConstantes.API_MINECRAFT_SKIN_URL + uuid;
         unit.setSkin(skin);
 
         validateCID(unit);
@@ -66,7 +70,7 @@ public class UnitsService {
             String uuid = fetchUUIDFromMinecraftAPI(unit.getPseudo());
             existingUnit.setUuid(uuid);
 
-            String skin = genericConstantes.API_MINECRAFT_SKIN_URL + unit.getPseudo() + "/Body/10.5/10";
+            String skin = genericConstantes.API_MINECRAFT_SKIN_URL + uuid;
             existingUnit.setSkin(skin);
         }
         if (unit.getGrade() != null) {
@@ -97,6 +101,14 @@ public class UnitsService {
 
     public Units findUnitById(int id) {
         return unitsRepository.findById(id).orElseThrow(() -> new UnitNotFoundException("Unit with id " + id + " not found"));
+    }
+
+    public List<Units> findUnitByIsBaseUnion(boolean isBaseUnion) {
+        return unitsRepository.findUnitByIsBaseUnion(isBaseUnion);
+    }
+
+    public List<Units> findUnitByIsBaseDivision(boolean isBaseDivision) {
+        return unitsRepository.findUnitByIsBaseDivision(isBaseDivision);
     }
 
     public Units findUnitByPseudo(String pseudo) {

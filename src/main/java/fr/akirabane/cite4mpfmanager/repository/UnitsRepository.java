@@ -14,5 +14,7 @@ public interface UnitsRepository extends JpaRepository<Units, Integer> {
     List<Units> findUnitsByGrade(String grade);
     List<Units> findUnitsByDivision(String division);
     Units findUnitsByCid(int cid);
+    List<Units> findUnitByIsBaseUnion(boolean isBaseUnion);
+    List<Units> findUnitByIsBaseDivision(boolean isBaseDivision);
 
 }

@@ -14,7 +14,18 @@ public class UnitMapper {
                 unit.getCid(),
                 unit.getGrade(),
                 unit.getDivision(),
-                unit.getMatricule()
+                unit.getMatricule(),
+                unit.getStatut(),
+                unit.getCommentaire(),
+                unit.isBaseUnion(),
+                unit.isBaseDivision(),
+                unit.getUp(),
+                unit.getRecrutement(),
+                unit.isActivite(),
+                unit.isUniteFormatrice(),
+                unit.isReferentDivision(),
+                unit.getBlames(),
+                unit.getSecondJob()
         );
     }
 
